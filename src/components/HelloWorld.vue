@@ -6,9 +6,9 @@
                 <div class="clearfix"></div>
                 <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
                 <div v-if="showSeasons">
-                    <div v-on:click="showMatches[index] = !showMatches[index]" v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}
+                    <div v-on:click="toggleMatches(index)" v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}<br>
                         <div v-if="showMatches[index]">
-                            <div v-on:click="gotoMatchPage(index)" v-for="(match, idx) in matches[index]" v-bind:key='idx'>{{ match.name }}</div>
+                            <div v-on:click="gotoMatchPage(index)" v-for="(match, idx) in matches[index]" v-bind:key='idx'>{{ match }}</div>
                         </div>
                     </div>
                 </div>
@@ -27,6 +27,22 @@
 import Papa from '../../node_modules/papaparse/papaparse.js'
 
 
+//hard-coding the size of matches array to 10
+var showSeasons = false;
+var showMatches = new Array(10);
+for (var i = 0; i < showMatches.length; i++)
+    showMatches[i] = false;
+var matches = new Array(10);
+for (var i = 0; i < 10; i++) {
+    matches[i] = new Array(90);
+    for (var j = 0; j < 10; j++)
+        matches[i].push("match");
+}
+var toggleMatches = function(myId) {
+    this.showMatches[myId] = !this.showMatches[myId];
+    alert(this.showMatches[myId]);
+}
+
 export default {
 
     name: 'HelloWorld',
@@ -34,25 +50,16 @@ export default {
         msg: String
     },
     data() {
-        //hard-coding the size of matches array to 10
-        var showSeasons = false;
-        var showMatches = new Array(10);
-        for (var i = 0; i < showMatches.length; i++)
-            showMatches[i] = false;
-        var matches = new Array(10);
-        for (var i = 0; i < 10; i++)
-            matches[i] = new Array(100);
         return {
             seasons: [
-                { "name": "Season#1" },
-                { "name": "Season#2" },
-                { "name": "Season#3" },
-                { "name": "Season#4" },
-                { "name": "Season#5" }
-            ], showSeasons, showMatches, matches
+                { "name": "2008" },
+                { "name": "2009" },
+                { "name": "2010" },
+                { "name": "2011" },
+                { "name": "2012" }
+            ], showSeasons, showMatches, matches, toggleMatches
         }
     }
-
 }
 
 /*
