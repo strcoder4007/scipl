@@ -1,23 +1,34 @@
 <template>
     <div class="hello">
-        <div class="row">
-            <div class="col-sm-12 col-md-3" style="background-color: #333; min-height: 100vh;">
+        <div class="row gutter-0">
+            <div class="col-sm-12 col-md-2" style="background-color: #333; min-height: 100vh; overflow: auto">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
                 <div class="seasonsClass">Seasons</div>
                 <div v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}</div>
             </div>
-            <div class="col-sm-12 col-md-9" style="background-color:  #222; min-height: 100vh;">
-
+            <div class="col-sm-12 col-md-10" style="background-color:  #222; min-height: 100vh;">
             </div>
         </div>
     </div>
 </template>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
 
 import Papa from '../../node_modules/papaparse/papaparse.js'
-
 export default {
 
 
@@ -39,27 +50,37 @@ export default {
 
 }
 
-Papa.parse("", {
-    complete: function(results) {
-        console.log("Finished:", results.data);
-    }
-});
+var myfile = "./assets/data/Team.csv";
+console.log(Papa.parse(myfile));
 
 </script>
 
 
+
+
+
+
+
+
+
+
+
+
+
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Anton');
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+.row {
+    width: 100vw;
+}
+
 .brand {
-    font-size: 15em;
+    font-size: 10em;
     color: #222;
     font-family: "Anton";
     border-bottom: 2px solid #222;
 }
 
 .seasonsClass {
-    font-size: 3em;
+    font-size: 2em;
     color: #222;
     font-family: "Anton";
     border-bottom: 1px solid #222;
