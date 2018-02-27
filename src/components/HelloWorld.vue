@@ -8,6 +8,9 @@
                 <div v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}</div>
             </div>
             <div class="col-sm-12 col-md-10" style="background-color:  #222; min-height: 100vh;">
+                <form enctype="multipart/form-data">
+                    <input type="file" @change="onFileChange">
+                </form>
             </div>
         </div>
     </div>
@@ -16,18 +19,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 <script>
 
+var teams;
 import Papa from '../../node_modules/papaparse/papaparse.js'
 export default {
 
@@ -46,24 +40,40 @@ export default {
                 { "name": "Season#5" }
             ]
         }
+    },
+    methods: {
+        onFileChange(e) {
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            this.createInput(files[0]);
+        },
+        createInput(file) {
+            var reader = new FileReader();
+            reader.onload = (e) => {
+                this.fileinput = reader.result;
+                this.teams = e.target.result;
+            }
+            reader.readAsText(file);
+        }
+
     }
 
 }
 
-var myfile = "./assets/data/Team.csv";
-console.log(Papa.parse(myfile));
+/*
+var file = new File('/scipl/src/assets/data/Team.csv');
+console.log(file);
+
+Papa.parse(file, {
+	complete: function(results) {
+		console.log("Finished:", results.data);
+	}
+});
+*/
+
 
 </script>
-
-
-
-
-
-
-
-
-
-
 
 
 
