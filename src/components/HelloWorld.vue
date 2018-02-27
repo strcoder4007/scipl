@@ -4,13 +4,16 @@
             <div class="col-sm-12 col-md-2" style="background-color: #333; min-height: 100vh; overflow: auto">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
-                <div class="seasonsClass">Seasons</div>
-                <div v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}</div>
+                <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
+                <div v-if="showSeasons">
+                    <div v-on:click="showMatches[index] = !showMatches[index]" v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}
+                        <div v-if="showMatches[index]">
+                            <div v-on:click="gotoMatchPage(index)" v-for="(match, idx) in matches[index]" v-bind:key='idx'>{{ match.name }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-12 col-md-10" style="background-color:  #222; min-height: 100vh;">
-                <form enctype="multipart/form-data">
-                    <input type="file" @change="onFileChange">
-                </form>
             </div>
         </div>
     </div>
@@ -21,10 +24,17 @@
 
 <script>
 
-var teams;
 import Papa from '../../node_modules/papaparse/papaparse.js'
-export default {
 
+var showSeasons = true;
+var showMatches = new Array(10);
+for (var i = 0; i < showMatches.length; i++)
+    showMatches[i] = false;
+var matches = new Array(10);
+for (var i = 0; i < 10; i++)
+    matches[i] = new Array(100);
+
+export default {
 
     name: 'HelloWorld',
     props: {
@@ -40,30 +50,14 @@ export default {
                 { "name": "Season#5" }
             ]
         }
-    },
-    methods: {
-        onFileChange(e) {
-            var files = e.target.files || e.dataTransfer.files;
-            if (!files.length)
-                return;
-            this.createInput(files[0]);
-        },
-        createInput(file) {
-            var reader = new FileReader();
-            reader.onload = (e) => {
-                this.fileinput = reader.result;
-                this.teams = e.target.result;
-            }
-            reader.readAsText(file);
-        }
-
     }
 
 }
 
 /*
-var file = new File('/scipl/src/assets/data/Team.csv');
-console.log(file);
+var file = new File([""], '/scipl/src/assets/data/Team.csv');
+var rdr = new FileReader;
+console.log(rdr.readAsText(file));
 
 Papa.parse(file, {
 	complete: function(results) {
@@ -71,7 +65,6 @@ Papa.parse(file, {
 	}
 });
 */
-
 
 </script>
 
