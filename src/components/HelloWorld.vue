@@ -4,6 +4,7 @@
             <div class="col-sm-12 col-md-3" style="background-color: #333; min-height: 100vh;">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
+                <div class="seasonsClass">Seasons</div>
                 <div v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}</div>
             </div>
             <div class="col-sm-12 col-md-9" style="background-color:  #222; min-height: 100vh;">
@@ -14,7 +15,12 @@
 </template>
 
 <script>
+
+import Papa from '../../node_modules/papaparse/papaparse.js'
+
 export default {
+
+
     name: 'HelloWorld',
     props: {
         msg: String
@@ -30,10 +36,18 @@ export default {
             ]
         }
     }
+
 }
+
+Papa.parse("", {
+    complete: function(results) {
+        console.log("Finished:", results.data);
+    }
+});
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Anton');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
@@ -49,5 +63,10 @@ export default {
     color: #222;
     font-family: "Anton";
     border-bottom: 1px solid #222;
+    cursor: pointer;
+}
+
+.seasonsClass:hover {
+    color: #111;
 }
 </style>
