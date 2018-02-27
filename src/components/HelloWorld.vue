@@ -26,13 +26,6 @@
 
 import Papa from '../../node_modules/papaparse/papaparse.js'
 
-var showSeasons = true;
-var showMatches = new Array(10);
-for (var i = 0; i < showMatches.length; i++)
-    showMatches[i] = false;
-var matches = new Array(10);
-for (var i = 0; i < 10; i++)
-    matches[i] = new Array(100);
 
 export default {
 
@@ -41,6 +34,14 @@ export default {
         msg: String
     },
     data() {
+        //hard-coding the size of matches array to 10
+        var showSeasons = false;
+        var showMatches = new Array(10);
+        for (var i = 0; i < showMatches.length; i++)
+            showMatches[i] = false;
+        var matches = new Array(10);
+        for (var i = 0; i < 10; i++)
+            matches[i] = new Array(100);
         return {
             seasons: [
                 { "name": "Season#1" },
@@ -48,7 +49,7 @@ export default {
                 { "name": "Season#3" },
                 { "name": "Season#4" },
                 { "name": "Season#5" }
-            ]
+            ], showSeasons, showMatches, matches
         }
     }
 
