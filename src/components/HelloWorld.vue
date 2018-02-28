@@ -6,9 +6,9 @@
                 <div class="clearfix"></div>
                 <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
                 <div v-if="showSeasons">
-                    <div v-on:click="showMatches = !showMatches" v-for="(season, index) in seasons" :key='index' class="seasonsClass">{{ season.name }}<br>
-                        <div v-if="showMatches">
-                            <div v-on:click="gotoMatchPage(index)" v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
+                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons" :key='index' class="seasonsClass"><div>{{ season.name }}</div>
+                        <div v-if="showMatches[index]">
+                            <div v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
                         </div>
                     </div>
                 </div>
@@ -29,12 +29,19 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 
 //hard-coding the size of matches array to 10x4
 var showSeasons = false;
-var showMatches = false;
+var showMatches = new Array;
+for(var i = 0; i < 10; i++)
+    showMatches.push(false);
 var matches = new Array(10);
 for (var i = 0; i < 10; i++) {
-    matches[i] = new Array(90);
+    matches[i] = new Array;
     for (var j = 0; j < 4; j++)
-        matches[i].push("match");
+        matches[i].push("m");
+}
+var justchecking = function(index) {
+    this.showSeasons = !this.showSeasons;
+    this.showMatches[index] = !this.showMatches[index];
+    this.showSeasons = !this.showSeasons;
 }
 
 export default {
@@ -51,7 +58,7 @@ export default {
                 { "name": "2010" },
                 { "name": "2011" },
                 { "name": "2012" }
-            ], showSeasons, showMatches, matches
+            ], showSeasons, showMatches, matches, justchecking
         }
     }
 }
@@ -73,9 +80,6 @@ Papa.parse(file, {
 
 
 <style scoped>
-.row {
-    width: 100vw;
-}
 
 .sidebar {
     background-color: #333; 
