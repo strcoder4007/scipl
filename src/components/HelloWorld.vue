@@ -6,8 +6,8 @@
                 <div class="clearfix"></div>
                 <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
                 <div v-if="showSeasons">
-                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons" :key='index' class="seasonsClass">
-                        <div>{{ season.name }}</div>
+                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons.slice().reverse()" :key='index' class="seasonsClass">
+                        <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
                         </div>
@@ -29,6 +29,7 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 
 
 //hard-coding the size of matches array to 10x4
+var seasons = new Array;
 var showSeasons = false;
 var showMatches = new Array;
 for (let i = 0; i < 10; i++)
@@ -39,23 +40,10 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var seasons = new Array;
+
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
 var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
-
-//for teams
-fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
-    if (response.status !== 200) {
-        return;
-    }
-    response.text().then(function(data) {
-        myTeams = data;
-        //console.log("team:", data);
-    });
-}).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-})
 
 //for matches
 fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
@@ -63,20 +51,32 @@ fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8
         return;
     }
     response.text().then(function(data) {
-        myMatches = data;
-        //console.log("match:", data);
+        myMatches = Papa.parse(data).data;
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
 })
+
+//for teams
+fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
+    if (response.status !== 200) {
+        return;
+    }
+    response.text().then(function(data) {
+        myTeams = Papa.parse(data).data;
+    });
+}).catch(function(err) {
+    console.log('Fetch Error :-S', err);
+})
+
 //for seasons
 fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
     if (response.status !== 200) {
         return;
     }
     response.text().then(function(data) {
-        mySeasons = data;
-        //console.log("season:", data);
+        mySeasons = Papa.parse(data).data;
+        console.log(mySeasons);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -84,29 +84,26 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
 
 setTimeout(function() {
 
-//code here
 
-}, 1000);
+    for (let i = 1; i < 10; i++) {
+        let junk = "df";
+        for (let j = 1; j < mySeasons.length; j++)
+            if (parseInt(mySeasons[j][0]) == i)
+                junk = mySeasons[j][1];
+        seasons.push([junk]);
+    }
 
-/*
-Papa.parse(baseUrl + "/assets/data/Season.csv", {
-    download: true,
-    complete: function(results) {
-        console.log(mySeasons);
-        mySeasons = results.data;
+    for (let i = 1; i < myMatches.length; i++) {
+        let junk = myMatches[i][4];
+        if (parseInt(junk) >= 0 && parseInt(junk) <= 9)
+            seasons[parseInt(junk)].push(myMatches[i][1]);
     }
-});
-Papa.parse(baseUrl + "/assets/data/Match.csv", {
-    download: true,
-    complete: function(results) {
-        myMatches = results.data;
-        console.log(myMatches);
-        for (let i = 1; i < myMatches.length; i++) {
-            seasons[myMatches[i][4]].push({ "name": myMatches[i][2]});
-        }
-    }
-});
-*/
+
+    seasons.splice(0, 1);
+    seasons.slice().reverse();
+
+}, 2000);
+
 
 var justchecking = function(index) {
     showSeasons = !showSeasons;
@@ -126,46 +123,6 @@ export default {
         }
     }
 }
-
-
-/*
-Papa.parse("http://18.221.40.67/assets/data/Team.csv", {
-	download: true,
-	complete: function(results) {
-		console.log("Teams: " + results.data);
-	}
-});
-Papa.parse("http://18.221.40.67/assets/data/Player_Match.csv", {
-	download: true,
-	complete: function(results) {
-		console.log(results);
-	}
-});
-Papa.parse("http://18.221.40.67/assets/data/Player.csv", {
-	download: true,
-	complete: function(results) {
-		console.log(results);
-	}
-});
-Papa.parse("http://18.221.40.67/assets/data/Ball_by_Ball.csv", {
-	download: true,
-	complete: function(results) {
-		console.log(results);
-	}
-});
-*/
-
-
-/*
-var someData;
-HelloWorld.http.get('http://18.221.40.67/assets/data/Team.csv').then(response => {
-    // get body data
-    someData = response.body;
-    console.log(someData);
-    }, response => {
-    // error callback
-});
-  */
 
 </script>
 
