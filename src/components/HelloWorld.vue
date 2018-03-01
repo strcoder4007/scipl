@@ -39,32 +39,73 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var baseUrl = "http://18.221.40.67";
-//var baseUrl = "http://localhost:8080"; //not working
 var seasons = new Array;
 var myTeams, myMatches, mySeasons, myPlayers;
+var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
+var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
+
+//for teams
+fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
+    if (response.status !== 200) {
+        return;
+    }
+    response.text().then(function(data) {
+        myTeams = data;
+        //console.log("team:", data);
+    });
+}).catch(function(err) {
+    console.log('Fetch Error :-S', err);
+})
+
+//for matches
+fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
+    if (response.status !== 200) {
+        return;
+    }
+    response.text().then(function(data) {
+        myMatches = data;
+        //console.log("match:", data);
+    });
+}).catch(function(err) {
+    console.log('Fetch Error :-S', err);
+})
+//for seasons
+fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
+    if (response.status !== 200) {
+        return;
+    }
+    response.text().then(function(data) {
+        mySeasons = data;
+        //console.log("season:", data);
+    });
+}).catch(function(err) {
+    console.log('Fetch Error :-S', err);
+})
+
+/*
 Papa.parse(baseUrl + "/assets/data/Season.csv", {
     download: true,
     complete: function(results) {
-        console.log(this.mySeasons);
-        this.mySeasons = results.data;
+        console.log(mySeasons);
+        mySeasons = results.data;
     }
 });
 Papa.parse(baseUrl + "/assets/data/Match.csv", {
     download: true,
     complete: function(results) {
-        this.myMatches = results.data;
-        console.log(this.myMatches);
-        for (let i = 1; i < this.myMatches.length; i++) {
-            seasons[this.myMatches[i][4]].push({ "name": this.myMatches[i][2]});
+        myMatches = results.data;
+        console.log(myMatches);
+        for (let i = 1; i < myMatches.length; i++) {
+            seasons[myMatches[i][4]].push({ "name": myMatches[i][2]});
         }
     }
 });
+*/
 
 var justchecking = function(index) {
-    this.showSeasons = !this.showSeasons;
-    this.showMatches[index] = !this.showMatches[index];
-    this.showSeasons = !this.showSeasons;
+    showSeasons = !showSeasons;
+    showMatches[index] = !showMatches[index];
+    showSeasons = !showSeasons;
 }
 
 export default {
@@ -113,8 +154,8 @@ Papa.parse("http://18.221.40.67/assets/data/Ball_by_Ball.csv", {
 var someData;
 HelloWorld.http.get('http://18.221.40.67/assets/data/Team.csv').then(response => {
     // get body data
-    this.someData = response.body;
-    console.log(this.someData);
+    someData = response.body;
+    console.log(someData);
     }, response => {
     // error callback
 });
