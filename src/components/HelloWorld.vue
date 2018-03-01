@@ -30,10 +30,10 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 //hard-coding the size of matches array to 10x4
 var showSeasons = false;
 var showMatches = new Array;
-for(var i = 0; i < 10; i++)
+for(let i = 0; i < 10; i++)
     showMatches.push(false);
 var matches = new Array(10);
-for (var i = 0; i < 10; i++) {
+for (let i = 0; i < 10; i++) {
     matches[i] = new Array;
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
@@ -63,17 +63,32 @@ export default {
     }
 }
 
-/*
-var file = new File([""], '/scipl/src/assets/data/Team.csv');
-var rdr = new FileReader;
-console.log(rdr.readAsText(file));
 
-Papa.parse(file, {
-	complete: function(results) {
-		console.log("Finished:", results.data);
+Papa.parse("http://18.221.40.67/assets/data/Team.csv", {
+    header: true,
+	download: true,
+	step: function(row) {
+		console.log("Row:", row.data);
+	},
+	complete: function() {
+		console.log("All done!");
 	}
 });
-*/
+
+
+/*
+var someData;
+
+  HelloWorld.http.get('http://18.221.40.67/assets/data/Team.csv').then(response => {
+
+    // get body data
+    this.someData = response.body;
+    console.log(this.someData);
+
+  }, response => {
+    // error callback
+  });
+  */
 
 </script>
 
@@ -91,7 +106,6 @@ Papa.parse(file, {
     font-size: 10em;
     color: #222;
     font-family: "Anton";
-    border-bottom: 3px solid #222;
     cursor: pointer;
 }
 
@@ -99,7 +113,7 @@ Papa.parse(file, {
     font-size: 2em;
     color: #222;
     font-family: "Anton";
-    border-bottom: 2px solid #222;
+    border-top: 2px solid #222;
     cursor: pointer;
 }
 
