@@ -82,6 +82,12 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
     console.log('Fetch Error :-S', err);
 })
 
+setTimeout(function() {
+
+//code here
+
+}, 1000);
+
 /*
 Papa.parse(baseUrl + "/assets/data/Season.csv", {
     download: true,
