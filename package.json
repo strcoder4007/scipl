@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "lint": "vue-cli-service lint",
-    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "build": "WEBPACK_ENV=production webpack"
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "bootstrap": "^4.0.0",
+    "csv-reader": "^1.0.1",
     "papaparse": "^4.3.7",
     "vue": "^2.5.13"
   },

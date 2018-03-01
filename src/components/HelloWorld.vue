@@ -6,7 +6,8 @@
                 <div class="clearfix"></div>
                 <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
                 <div v-if="showSeasons">
-                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons" :key='index' class="seasonsClass"><div>{{ season.name }}</div>
+                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons" :key='index' class="seasonsClass">
+                        <div>{{ season.name }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
                         </div>
@@ -30,7 +31,7 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 //hard-coding the size of matches array to 10x4
 var showSeasons = false;
 var showMatches = new Array;
-for(let i = 0; i < 10; i++)
+for (let i = 0; i < 10; i++)
     showMatches.push(false);
 var matches = new Array(10);
 for (let i = 0; i < 10; i++) {
@@ -38,6 +39,28 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
+var baseUrl = "http://18.221.40.67";
+//var baseUrl = "http://localhost:8080"; //not working
+var seasons = new Array;
+var myTeams, myMatches, mySeasons, myPlayers;
+Papa.parse(baseUrl + "/assets/data/Season.csv", {
+    download: true,
+    complete: function(results) {
+        console.log(this.mySeasons);
+        this.mySeasons = results.data;
+    }
+});
+Papa.parse(baseUrl + "/assets/data/Match.csv", {
+    download: true,
+    complete: function(results) {
+        this.myMatches = results.data;
+        console.log(this.myMatches);
+        for (let i = 1; i < this.myMatches.length; i++) {
+            seasons[this.myMatches[i][4]].push({ "name": this.myMatches[i][2]});
+        }
+    }
+});
+
 var justchecking = function(index) {
     this.showSeasons = !this.showSeasons;
     this.showMatches[index] = !this.showMatches[index];
@@ -52,42 +75,49 @@ export default {
     },
     data() {
         return {
-            seasons: [
-                { "name": "2008" },
-                { "name": "2009" },
-                { "name": "2010" },
-                { "name": "2011" },
-                { "name": "2012" }
-            ], showSeasons, showMatches, matches, justchecking
+            seasons, showSeasons, showMatches, matches, justchecking
         }
     }
 }
 
 
+/*
 Papa.parse("http://18.221.40.67/assets/data/Team.csv", {
-    header: true,
 	download: true,
-	step: function(row) {
-		console.log("Row:", row.data);
-	},
-	complete: function() {
-		console.log("All done!");
+	complete: function(results) {
+		console.log("Teams: " + results.data);
 	}
 });
+Papa.parse("http://18.221.40.67/assets/data/Player_Match.csv", {
+	download: true,
+	complete: function(results) {
+		console.log(results);
+	}
+});
+Papa.parse("http://18.221.40.67/assets/data/Player.csv", {
+	download: true,
+	complete: function(results) {
+		console.log(results);
+	}
+});
+Papa.parse("http://18.221.40.67/assets/data/Ball_by_Ball.csv", {
+	download: true,
+	complete: function(results) {
+		console.log(results);
+	}
+});
+*/
 
 
 /*
 var someData;
-
-  HelloWorld.http.get('http://18.221.40.67/assets/data/Team.csv').then(response => {
-
+HelloWorld.http.get('http://18.221.40.67/assets/data/Team.csv').then(response => {
     // get body data
     this.someData = response.body;
     console.log(this.someData);
-
-  }, response => {
+    }, response => {
     // error callback
-  });
+});
   */
 
 </script>
@@ -95,9 +125,8 @@ var someData;
 
 
 <style scoped>
-
 .sidebar {
-    background-color: #333; 
+    background-color: #333;
     min-height: 100vh;
     overflow: auto;
 }
@@ -124,7 +153,8 @@ var someData;
     cursor: pointer;
 }
 
-.seasonsClass:hover, .matchClass:hover {
+.seasonsClass:hover,
+.matchClass:hover {
     color: #111;
 }
 </style>
