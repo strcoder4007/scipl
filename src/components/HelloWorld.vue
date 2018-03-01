@@ -4,9 +4,9 @@
             <div class="col-sm-12 col-md-2 sidebar">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
-                <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">Seasons</div>
+                <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">IPL Seasons</div>
                 <div v-if="showSeasons">
-                    <div v-on:click="justchecking(index)" v-for="(season, index) in seasons.slice().reverse()" :key='index' class="seasonsClass">
+                    <div v-on:click="showSeasons = !showSeasons;showMatches[index] = !showMatches[index];showSeasons = !showSeasons;" v-for="(season, index) in seasons.slice().reverse()" v-bind:key='index' class="seasonsClass">
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
@@ -31,6 +31,7 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 //hard-coding the size of matches array to 10x4
 var seasons = new Array;
 var showSeasons = false;
+console.log(showSeasons);
 var showMatches = new Array;
 for (let i = 0; i < 10; i++)
     showMatches.push(false);
@@ -84,7 +85,6 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
 
 setTimeout(function() {
 
-
     for (let i = 1; i < 10; i++) {
         let junk = "df";
         for (let j = 1; j < mySeasons.length; j++)
@@ -95,8 +95,9 @@ setTimeout(function() {
 
     for (let i = 1; i < myMatches.length; i++) {
         let junk = myMatches[i][4];
-        if (parseInt(junk) >= 0 && parseInt(junk) <= 9)
-            seasons[parseInt(junk)].push(myMatches[i][1]);
+        if (junk.length == 1)
+            if (parseInt(junk) >= 0 && parseInt(junk) <= 9)
+                seasons[parseInt(junk)].push(myMatches[i][1]).catch(console.log("junk: ", junk));
     }
 
     seasons.splice(0, 1);
@@ -119,6 +120,11 @@ export default {
     },
     data() {
         return {
+            junkfunk : function() {
+                console.log("=> ", showSeasons);
+                showSeasons = !showSeasons;
+                console.log("=> ", showSeasons);
+            },
             seasons, showSeasons, showMatches, matches, justchecking
         }
     }
