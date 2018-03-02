@@ -9,7 +9,9 @@
                     <div v-on:click="showSeasons = !showSeasons;showMatches[index] = !showMatches[index];showSeasons = !showSeasons;" v-for="(season, index) in seasons.slice().reverse()" v-bind:key='index' class="seasonsClass">
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
-                            <div v-for="(match, idx) in matches[index]" v-bind:key='idx' class="matchClass">{{ match }}</div>
+                            <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
+                                <div v-if="idx">{{ match }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -31,7 +33,6 @@ import Papa from '../../node_modules/papaparse/papaparse.js'
 //hard-coding the size of matches array to 10x4
 var seasons = new Array;
 var showSeasons = false;
-console.log(showSeasons);
 var showMatches = new Array;
 for (let i = 0; i < 10; i++)
     showMatches.push(false);
@@ -77,7 +78,7 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
     }
     response.text().then(function(data) {
         mySeasons = Papa.parse(data).data;
-        console.log(mySeasons);
+        mySeasons.splice(mySeasons.length-1, 1);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -85,7 +86,9 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
 
 setTimeout(function() {
 
-    for (let i = 1; i < 10; i++) {
+    console.log(mySeasons);
+
+    for (let i = 0; i < 10; i++) {
         let junk = "df";
         for (let j = 1; j < mySeasons.length; j++)
             if (parseInt(mySeasons[j][0]) == i)
@@ -94,23 +97,20 @@ setTimeout(function() {
     }
 
     for (let i = 1; i < myMatches.length; i++) {
-        let junk = myMatches[i][4];
-        if (junk.length == 1)
-            if (parseInt(junk) >= 0 && parseInt(junk) <= 9)
-                seasons[parseInt(junk)].push(myMatches[i][1]).catch(console.log("junk: ", junk));
+        let junk = parseInt(myMatches[i][4]);
+        if (junk > 0 && junk <= 9)
+            seasons[junk].push(myMatches[i][1]);
+        else {
+            //console.log("junk: ", junk)
+        }
     }
 
     seasons.splice(0, 1);
     seasons.slice().reverse();
 
-}, 2000);
+    console.log(seasons);
 
-
-var justchecking = function(index) {
-    showSeasons = !showSeasons;
-    showMatches[index] = !showMatches[index];
-    showSeasons = !showSeasons;
-}
+}, 1000);
 
 export default {
 
@@ -120,12 +120,7 @@ export default {
     },
     data() {
         return {
-            junkfunk : function() {
-                console.log("=> ", showSeasons);
-                showSeasons = !showSeasons;
-                console.log("=> ", showSeasons);
-            },
-            seasons, showSeasons, showMatches, matches, justchecking
+            seasons, showSeasons, showMatches, matches
         }
     }
 }
