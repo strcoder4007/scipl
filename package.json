@@ -11,7 +11,8 @@
     "bootstrap": "^4.0.0",
     "csv-reader": "^1.0.1",
     "papaparse": "^4.3.7",
-    "vue": "^2.5.13"
+    "vue": "^2.5.13",
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-beta.1",

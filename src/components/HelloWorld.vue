@@ -86,8 +86,6 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
 
 setTimeout(function() {
 
-    console.log(mySeasons);
-
     for (let i = 0; i < 10; i++) {
         let junk = "df";
         for (let j = 1; j < mySeasons.length; j++)
@@ -108,9 +106,7 @@ setTimeout(function() {
     seasons.splice(0, 1);
     seasons.slice().reverse();
 
-    console.log(seasons);
-
-}, 1000);
+}, 2000);
 
 export default {
 
