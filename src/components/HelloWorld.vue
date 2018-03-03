@@ -30,10 +30,6 @@
 
 import Papa from '../../node_modules/papaparse/papaparse.js'
 
-window.onload = function() {
-
-}
-
 
 //hard-coding the size of matches array to 10x4
 var seasons = new Array;
