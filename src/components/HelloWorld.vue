@@ -1,7 +1,7 @@
 <template>
     <div class="hello">
         <div class="row gutter-0">
-            <div class="col-sm-12 col-md-2 sidebar">
+            <div class="Left col-sm-12 col-md-2">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
                 <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">IPL Seasons</div>
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-10" style="background-color:  #222; min-height: 100vh;">
+            <div class="Right col-sm-12 col-md-10">
                 <canvas id="line-chart" width="800" height="450"></canvas>
             </div>
         </div>
@@ -168,10 +168,26 @@ export default {
 
 
 <style scoped>
-.sidebar {
-    background-color: #333;
-    min-height: 100vh;
+
+.Left {
+    border-right: 4px solid #222;
+}
+
+.Left,
+.Right {
     overflow: auto;
+    height: 100vh;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+}
+
+.Left::-webkit-scrollbar,
+.Right::-webkit-scrollbar {
+    display: none;
+}
+
+.Left, .Right {
+    background-color: #333;
 }
 
 .brand {
