@@ -4,19 +4,24 @@
             <div class="Left col-sm-12 col-md-2">
                 <span class="brand">SC</span>
                 <div class="clearfix"></div>
-                <div class="seasonsClass" v-on:click="showSeasons = !showSeasons">IPL Seasons</div>
+                <div class="seasonClass" v-on:click="showSeasons = !showSeasons">IPL Seasons</div>
                 <div v-if="showSeasons">
                     <div v-on:click="showSeasons = !showSeasons;showMatches[index] = !showMatches[index];showSeasons = !showSeasons;" v-for="(season, index) in seasons.slice().reverse()" v-bind:key='index' class="seasonsClass">
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx">{{ match }}</div>
+                                <div v-if="idx" v-on:click="loadMatch(match.split('$')[0]);showMatches[index] = !showMatches[index]; showMatch = true;">{{ match.split('$')[2] }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="seasonClass">Versus</div>
+                <div class="seasonClass">Settings</div>
             </div>
             <div class="Right col-sm-12 col-md-10">
+                <div v-if="showMatch">
+                    <span class="teamNameClass">{{teamId || "First Team"}} vs {{opponentId || "Second Team"}}</span>
+                </div>
                 <canvas id="line-chart" width="800" height="450"></canvas>
             </div>
         </div>
@@ -43,6 +48,7 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
+var matchDate, teamId, opponentId, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
@@ -55,6 +61,9 @@ fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8
     }
     response.text().then(function(data) {
         myMatches = Papa.parse(data).data;
+        console.log(myMatches);
+        //paste here
+
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -85,7 +94,9 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
     console.log('Fetch Error :-S', err);
 })
 
-setTimeout(function() {
+setTimeout(() => {
+
+    console.log(mySeasons);
 
     for (let i = 0; i < 10; i++) {
         let junk = "df";
@@ -97,15 +108,63 @@ setTimeout(function() {
 
     for (let i = 1; i < myMatches.length; i++) {
         let junk = parseInt(myMatches[i][4]);
-        if (junk > 0 && junk <= 9)
-            seasons[junk].push(myMatches[i][1]);
-        else {
-            //console.log("junk: ", junk)
+        if (junk > 0 && junk <= 9) {
+            let strng = myMatches[i][0] + "$" + myMatches[i][1] + "$" + myTeams[myMatches[i][2]][2] + " vs " + myTeams[myMatches[i][3]][2];
+            seasons[junk].push(strng);
         }
     }
 
     seasons.splice(0, 1);
     seasons.slice().reverse();
+
+
+}, 1000);
+
+
+var loadMatch = x => {
+
+    /*
+    0 Match_Id,
+    1    Match_Date,
+    2   Team_Name_Id,
+    3    Opponent_Team_Id,
+    4   Season_Id,
+    5    Venue_Name,
+    6    Toss_Winner_Id,
+    7    Toss_Decision,
+    8    IS_Superover,
+    9    IS_Result,
+    10    Is_DuckWorthLewis,
+    11    Win_Type,
+    12    Won_By,
+    13    Match_Winner_Id,
+    14    Man_Of_The_Match_Id,
+    15    First_Umpire_Id,
+    16    Second_Umpire_Id,
+    17    City_Name,
+    18    Host_Country
+    */
+    var matchId = x;
+
+    for (let i = 0; i < myMatches.length; i++) {
+        if (myMatches[i][0] == matchId) {
+            matchDate = myMatches[i][1]
+            teamId = myMatches[i][2];
+            opponentId = myMatches[i][3];
+            seasonId = myMatches[i][4];
+            venueName = myMatches[i][5];
+            tossId = myMatches[i][6];
+            tossDecision = myMatches[i][7];
+            winType = myMatches[i][11];
+            wonBy = myMatches[i][12];
+            matchWinnerId = myMatches[i][13];
+            manOfTheMatch = myMatches[i][14];
+            city = myMatches[i][17];
+            country = myMatches[i][18];
+            break;
+        }
+    }
+
 
     new Chart(document.getElementById("line-chart"), {
         type: 'line',
@@ -121,21 +180,6 @@ setTimeout(function() {
                 label: "Asia",
                 borderColor: "#8e5ea2",
                 fill: false
-            }, {
-                data: [168, 170, 178, 190, 203, 276, 408, 547, 675, 734],
-                label: "Europe",
-                borderColor: "#3cba9f",
-                fill: false
-            }, {
-                data: [40, 20, 10, 16, 24, 38, 74, 167, 508, 784],
-                label: "Latin America",
-                borderColor: "#e8c3b9",
-                fill: false
-            }, {
-                data: [6, 3, 2, 2, 7, 26, 82, 172, 312, 433],
-                label: "North America",
-                borderColor: "#c45850",
-                fill: false
             }
             ]
         },
@@ -146,9 +190,10 @@ setTimeout(function() {
             }
         }
     });
+}
 
 
-}, 1000);
+
 
 export default {
 
@@ -158,7 +203,7 @@ export default {
     },
     data() {
         return {
-            seasons, showSeasons, showMatches, matches
+            showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, teamId, opponentId, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
         }
     }
 }
@@ -168,6 +213,11 @@ export default {
 
 
 <style scoped>
+.teamNameClass {
+    font-family: "Anton";
+    font-size: 4em;
+    color: #222;
+}
 
 .Left {
     border-right: 4px solid #222;
@@ -186,7 +236,8 @@ export default {
     display: none;
 }
 
-.Left, .Right {
+.Left,
+.Right {
     background-color: #333;
 }
 
@@ -197,8 +248,16 @@ export default {
     cursor: pointer;
 }
 
+.seasonClass {
+    font-size: 35px;
+    color: #222;
+    font-family: "Anton";
+    border-top: 2px solid #222;
+    cursor: pointer;
+}
+
 .seasonsClass {
-    font-size: 2em;
+    font-size: 28px;
     color: #222;
     font-family: "Anton";
     border-top: 2px solid #222;
@@ -208,6 +267,7 @@ export default {
 .matchClass {
     color: #222;
     font-family: "Anton";
+    font-size: 25px;
     border-bottom: 1px solid #222;
     cursor: pointer;
 }
