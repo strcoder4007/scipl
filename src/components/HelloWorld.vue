@@ -10,7 +10,9 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" v-on:click="loadMatch(match.split('$')[0]);showMatches[index] = !showMatches[index]; showMatch = true;">{{ match.split('$')[2] }}</div>
+                                <div v-if="idx" v-on:click="loadMatch(match.split('$')[0]);showMatches[index] = !showMatches[index]; showMatch = true;">
+                                    {{ match.split('$')[2] }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -19,10 +21,7 @@
                 <div class="seasonClass">Settings</div>
             </div>
             <div class="Right col-sm-12 col-md-10">
-                <div v-if="showMatch">
-                    <span class="teamNameClass">{{teamId || "First Team"}} vs {{opponentId || "Second Team"}}</span>
-                </div>
-                <canvas id="line-chart" width="800" height="450"></canvas>
+                <Match :showMatch="showMatch" team opponent/>
             </div>
         </div>
     </div>
@@ -33,7 +32,8 @@
 
 <script>
 
-import Papa from '../../node_modules/papaparse/papaparse.js'
+import Papa from '../../node_modules/papaparse/papaparse.js';
+import Match from '../components/Match'
 
 
 //hard-coding the size of matches array to 10x4
@@ -48,7 +48,7 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var matchDate, teamId, opponentId, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
+var matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
@@ -76,6 +76,7 @@ fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqX
     }
     response.text().then(function(data) {
         myTeams = Papa.parse(data).data;
+        console.log(myTeams);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -149,8 +150,8 @@ var loadMatch = x => {
     for (let i = 0; i < myMatches.length; i++) {
         if (myMatches[i][0] == matchId) {
             matchDate = myMatches[i][1]
-            teamId = myMatches[i][2];
-            opponentId = myMatches[i][3];
+            team = myTeams[parseInt(myMatches[i][2])][1];
+            opponent = myTeams[parseInt(myMatches[i][3])][1];
             seasonId = myMatches[i][4];
             venueName = myMatches[i][5];
             tossId = myMatches[i][6];
@@ -198,12 +199,12 @@ var loadMatch = x => {
 export default {
 
     name: 'HelloWorld',
-    props: {
-        msg: String
+    components: {
+        Match
     },
     data() {
         return {
-            showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, teamId, opponentId, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
+            showMatch:false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
         }
     }
 }
@@ -213,11 +214,6 @@ export default {
 
 
 <style scoped>
-.teamNameClass {
-    font-family: "Anton";
-    font-size: 4em;
-    color: #222;
-}
 
 .Left {
     border-right: 4px solid #222;
