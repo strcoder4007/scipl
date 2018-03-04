@@ -10,7 +10,7 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" v-on:click="loadMatch(match.split('$')[0]);showMatches[index] = !showMatches[index]; showMatch = true;">
+                                <div v-if="idx" v-on:click="showMatch = false; showMatches[index] = !showMatches[index]; showMatch = true;loadMatch(match.split('$')[0]);">
                                     {{ match.split('$')[2] }}
                                 </div>
                             </div>
@@ -21,7 +21,9 @@
                 <div class="seasonClass">Settings</div>
             </div>
             <div class="Right col-sm-12 col-md-10">
-                <Match :showMatch="showMatch" team opponent/>
+                <div v-if="showMatch">
+                    <Match/>
+                </div>
             </div>
         </div>
     </div>
@@ -61,9 +63,7 @@ fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8
     }
     response.text().then(function(data) {
         myMatches = Papa.parse(data).data;
-        console.log(myMatches);
-        //paste here
-
+        //console.log(myMatches);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -76,7 +76,7 @@ fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqX
     }
     response.text().then(function(data) {
         myTeams = Papa.parse(data).data;
-        console.log(myTeams);
+        //console.log(myTeams);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -96,8 +96,6 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
 })
 
 setTimeout(() => {
-
-    console.log(mySeasons);
 
     for (let i = 0; i < 10; i++) {
         let junk = "df";
@@ -124,6 +122,8 @@ setTimeout(() => {
 
 var loadMatch = x => {
 
+    localStorage.setItem("myId", x);
+
     /*
     0 Match_Id,
     1    Match_Date,
@@ -145,52 +145,6 @@ var loadMatch = x => {
     17    City_Name,
     18    Host_Country
     */
-    var matchId = x;
-
-    for (let i = 0; i < myMatches.length; i++) {
-        if (myMatches[i][0] == matchId) {
-            matchDate = myMatches[i][1]
-            team = myTeams[parseInt(myMatches[i][2])][1];
-            opponent = myTeams[parseInt(myMatches[i][3])][1];
-            seasonId = myMatches[i][4];
-            venueName = myMatches[i][5];
-            tossId = myMatches[i][6];
-            tossDecision = myMatches[i][7];
-            winType = myMatches[i][11];
-            wonBy = myMatches[i][12];
-            matchWinnerId = myMatches[i][13];
-            manOfTheMatch = myMatches[i][14];
-            city = myMatches[i][17];
-            country = myMatches[i][18];
-            break;
-        }
-    }
-
-
-    new Chart(document.getElementById("line-chart"), {
-        type: 'line',
-        data: {
-            labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
-            datasets: [{
-                data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
-                label: "Africa",
-                borderColor: "#3e95cd",
-                fill: false
-            }, {
-                data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
-                label: "Asia",
-                borderColor: "#8e5ea2",
-                fill: false
-            }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'World population per region (in millions)'
-            }
-        }
-    });
 }
 
 
@@ -204,7 +158,7 @@ export default {
     },
     data() {
         return {
-            showMatch:false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
+            showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
         }
     }
 }
@@ -214,7 +168,6 @@ export default {
 
 
 <style scoped>
-
 .Left {
     border-right: 4px solid #222;
 }
@@ -234,7 +187,7 @@ export default {
 
 .Left,
 .Right {
-    background-color: #333;
+    background-color: #444;
 }
 
 .brand {
