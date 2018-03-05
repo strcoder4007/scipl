@@ -11,11 +11,10 @@
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
                                 <div v-if="idx" v-on:click="showMatch = false;
-                                                        showMatches[index] = !showMatches[index];
-                                                        showMatch = true;
-                                                        msg=parseInt(match.split('$')[0]);
-                                                        loadMatch();
-                                                        ">{{ match.split('$')[2] }}
+                                                            showMatches[index] = !showMatches[index];
+                                                            showMatch = true;
+                                                            matchInfo=match;
+                                                            ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
                                 </div>
                             </div>
                         </div>
@@ -26,17 +25,37 @@
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match v-bind:myId="msg" />
+                    <Match v-bind:matchInfo="matchInfo"/>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-
-
-
 <script>
+
+  /*
+    0 Match_Id,
+    1    Match_Date,
+    2   Team_Name_Id,
+    3    Opponent_Team_Id,
+    4   Season_Id,
+    5    Venue_Name,
+    6    Toss_Winner_Id,
+    7    Toss_Decision,
+    8    IS_Superover,
+    9    IS_Result,
+    10    Is_DuckWorthLewis,
+    11    Win_Type,
+    12    Won_By,
+    13    Match_Winner_Id,
+    14    Man_Of_The_Match_Id,
+    15    First_Umpire_Id,
+    16    Second_Umpire_Id,
+    17    City_Name,
+    18    Host_Country
+    */
+
 
 import Papa from '../../node_modules/papaparse/papaparse.js';
 import Match from '../components/Match'
@@ -54,14 +73,11 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
+var matchInfo = "", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
 var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
-
-
-var msg = 335987;
 
 //for matches
 fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
@@ -83,7 +99,13 @@ fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqX
     }
     response.text().then(function(data) {
         myTeams = Papa.parse(data).data;
-        //console.log(myTeams);
+        let teamShort = "", teamLong = "";
+        for(let k = 0; k < myTeams.length; k++) {
+            teamShort += myTeams[k][2] + '$';
+            teamLong += myTeams[k][1] + '$';
+        }
+        localStorage.setItem("myTeamsShort", teamShort);
+        localStorage.setItem("myTeams", teamLong);
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
@@ -102,9 +124,9 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
     console.log('Fetch Error :-S', err);
 })
 
-var myTimeout = 1000;
-if(localStorage.getItem("loaded") == undefined) {
-    myTimeout = 2000;
+var myTimeout = 10;
+if (localStorage.getItem("loaded") == undefined) {
+    myTimeout = 3000;
     localStorage.setItem("loaded", "");
 }
 
@@ -121,7 +143,11 @@ setTimeout(() => {
     for (let i = 1; i < myMatches.length; i++) {
         let junk = parseInt(myMatches[i][4]);
         if (junk > 0 && junk <= 9) {
-            let strng = myMatches[i][0] + "$" + myMatches[i][1] + "$" + myTeams[myMatches[i][2]][2] + " vs " + myTeams[myMatches[i][3]][2];
+            let strng = "";
+            for(let j = 0; j < myMatches[i].length; j++) {
+                strng = strng + myMatches[i][j] + "$";
+            }
+            strng += localStorage.getItem("myTeamsShort");
             seasons[junk].push(strng);
         }
     }
@@ -133,53 +159,57 @@ setTimeout(() => {
 }, myTimeout);
 
 
-var loadMatch = () => {
+var loadMatch = (x) => {
     //localStorage.setItem("myId", x);
-    new Chart(document.getElementById("line-chart"), {
-        type: 'line',
-        data: {
-            labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
-            datasets: [{
-                data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
-                label: "Africa",
-                borderColor: "#3e95cd",
-                fill: false
-            }, {
-                data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
-                label: "Asia",
-                borderColor: "#8e5ea2",
-                fill: false
-            }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'World population per region (in millions)'
-            }
+
+    for (let i = 0; i < myMatches.length; i++) {
+        if (myMatches[i][0] == x) {
+            matchDate = myMatches[i][1]
+            team = myTeams[parseInt(myMatches[i][2])][1];
+            opponent = myTeams[parseInt(myMatches[i][3])][1];
+            seasonId = myMatches[i][4];
+            venueName = myMatches[i][5];
+            tossId = myMatches[i][6];
+            tossDecision = myMatches[i][7];
+            winType = myMatches[i][11];
+            wonBy = myMatches[i][12];
+            matchWinnerId = myMatches[i][13];
+            manOfTheMatch = myMatches[i][14];
+            city = myMatches[i][17];
+            country = myMatches[i][18];
+            break;
         }
-    });
-    /*
-    0 Match_Id,
-    1    Match_Date,
-    2   Team_Name_Id,
-    3    Opponent_Team_Id,
-    4   Season_Id,
-    5    Venue_Name,
-    6    Toss_Winner_Id,
-    7    Toss_Decision,
-    8    IS_Superover,
-    9    IS_Result,
-    10    Is_DuckWorthLewis,
-    11    Win_Type,
-    12    Won_By,
-    13    Match_Winner_Id,
-    14    Man_Of_The_Match_Id,
-    15    First_Umpire_Id,
-    16    Second_Umpire_Id,
-    17    City_Name,
-    18    Host_Country
-    */
+    }
+
+
+    setTimeout(function() {
+        new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+                labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
+                datasets: [{
+                    data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
+                    label: "Africa",
+                    borderColor: "#3e95cd",
+                    fill: false
+                }, {
+                    data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
+                    label: "Asia",
+                    borderColor: "#8e5ea2",
+                    fill: false
+                }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'World population per region (in millions)'
+                }
+            }
+        });
+    }, 400);
+
+
 }
 
 
@@ -190,7 +220,7 @@ export default {
     },
     data() {
         return {
-            msg, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
+            matchInfo, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, myTeams
         }
     }
 }
