@@ -10,7 +10,7 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" v-on:click="showMatch = false; showMatches[index] = !showMatches[index]; showMatch = true;loadMatch(match.split('$')[0]);">
+                                <div v-if="idx" v-on:click="showMatch = false; showMatches[index] = !showMatches[index];showMatch = true;loadMatch(match.split('$')[0]);">
                                     {{ match.split('$')[2] }}
                                 </div>
                             </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match/>
+                    <Match :myIdChange="msg"/>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
+var msg="", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
@@ -121,9 +121,8 @@ setTimeout(() => {
 
 
 var loadMatch = x => {
-
     localStorage.setItem("myId", x);
-
+    msg = x;
     /*
     0 Match_Id,
     1    Match_Date,
@@ -148,17 +147,14 @@ var loadMatch = x => {
 }
 
 
-
-
 export default {
-
     name: 'HelloWorld',
     components: {
         Match
     },
     data() {
         return {
-            showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
+            msg, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country
         }
     }
 }
