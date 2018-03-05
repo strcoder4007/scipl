@@ -10,12 +10,12 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" 
-                                v-on:click="showMatch = false;
-                                                    showMatches[index] = !showMatches[index];
-                                                    showMatch = true;
-                                                    msg=parseInt(match.split('$')[0]);
-                                                    ">{{ match.split('$')[2] }}
+                                <div v-if="idx" v-on:click="showMatch = false;
+                                                        showMatches[index] = !showMatches[index];
+                                                        showMatch = true;
+                                                        msg=parseInt(match.split('$')[0]);
+                                                        loadMatch();
+                                                        ">{{ match.split('$')[2] }}
                                 </div>
                             </div>
                         </div>
@@ -26,7 +26,7 @@
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match v-bind:myId="msg"/>
+                    <Match v-bind:myId="msg" />
                 </div>
             </div>
         </div>
@@ -102,6 +102,12 @@ fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo
     console.log('Fetch Error :-S', err);
 })
 
+var myTimeout = 1000;
+if(localStorage.getItem("loaded") == undefined) {
+    myTimeout = 2000;
+    localStorage.setItem("loaded", "");
+}
+
 setTimeout(() => {
 
     for (let i = 0; i < 10; i++) {
@@ -124,12 +130,35 @@ setTimeout(() => {
     seasons.slice().reverse();
 
 
-}, 1000);
+}, myTimeout);
 
 
-var loadMatch = x => {
-    localStorage.setItem("myId", x);
-    //msg = x;
+var loadMatch = () => {
+    //localStorage.setItem("myId", x);
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
+            datasets: [{
+                data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
+                label: "Africa",
+                borderColor: "#3e95cd",
+                fill: false
+            }, {
+                data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
+                label: "Asia",
+                borderColor: "#8e5ea2",
+                fill: false
+            }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'World population per region (in millions)'
+            }
+        }
+    });
     /*
     0 Match_Id,
     1    Match_Date,
