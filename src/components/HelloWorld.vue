@@ -14,7 +14,7 @@
                                                     showMatches[index] = !showMatches[index];
                                                     showMatch = true;
                                                     matchInfo=match;
-                                                    loadMatch(match.split('$')[0]);
+                                                    loadMatch(match);
                                                     ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
                                 </div>
                             </div>
@@ -68,6 +68,11 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
     response.text().then(function(data) {
         myPlayers = Papa.parse(data).data;
         console.log(myPlayers);
+        let strng = "";
+        for(let i = 0; i < myPlayers.length; i++) {
+            strng += myPlayers[i][1]+'$';
+        }
+        localStorage.setItem("myPlayers", strng);
         //for balls;
         fetch('https://ilzqng.bn.files.1drv.com/y4mj1Rjjyfc6yNQa8SNGEqX_gI64G9fI7dlxz6Qnz6a45OoHVlOy3EYgzI4SJX9emnFYn85S9IwXL4tH91IktYw9YrRmGt1JGCkkeMHVWS2-FnOqH8wozDeQhw7-ucRd9GeU7uJjACVAGR0UERTD1GHq30UlLoq55-7bMmYrdTvf2LY-EcvNoT0ztGrORgpMT0X5bl5KPQATI1KhcWxWN8bEQ').then(response => {
             if (response.status !== 200) {
@@ -160,29 +165,8 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
 
 
 
-var loadMatch = x => {
-
-    /*
-      0 Match_Id,
-      1    Match_Date,
-      2   Team_Name_Id,
-      3    Opponent_Team_Id,
-      4   Season_Id,
-      5    Venue_Name,
-      6    Toss_Winner_Id,
-      7    Toss_Decision,
-      8    IS_Superover,
-      9    IS_Result,
-      10    Is_DuckWorthLewis,
-      11    Win_Type,
-      12    Won_By,
-      13    Match_Winner_Id,
-      14    Man_Of_The_Match_Id,
-      15    First_Umpire_Id,
-      16    Second_Umpire_Id,
-      17    City_Name,
-      18    Host_Country
-      */
+var loadMatch = info => {
+    let x = info.split('$')[0];
     let lastId = myBalls[0][2], runs1 = [], runs2 = [], cnt1 = 0, cnt2 = 0;
     let limit = myBalls.length;
     for (let i = 1; i < limit; i++) {
@@ -211,8 +195,9 @@ var loadMatch = x => {
             }
         }
     }
-
-
+    let teamString = localStorage.getItem("myTeams");
+    let team1 = teamString.split('$')[parseInt(info.split('$')[2])];
+    let team2 = teamString.split('$')[parseInt(info.split('$')[3])];
     setTimeout(function() {
         new Chart(document.getElementById("line-chart"), {
             type: 'line',
@@ -220,12 +205,12 @@ var loadMatch = x => {
                 labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
                 datasets: [{
                     data: runs1,
-                    label: "Africa",
+                    label: team1,
                     borderColor: "#3e95cd",
                     fill: false
                 }, {
                     data: runs2,
-                    label: "Asia",
+                    label: team2,
                     borderColor: "#8e5ea2",
                     fill: false
                 }
@@ -234,7 +219,7 @@ var loadMatch = x => {
             options: {
                 title: {
                     display: true,
-                    text: 'Runs vs Overs'
+                    text: 'Match progression: Runs VS Overs'
                 }
             }
         });
