@@ -11,10 +11,10 @@
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
                                 <div v-if="idx" v-on:click="showMatch = false;
-                                                            showMatches[index] = !showMatches[index];
-                                                            showMatch = true;
-                                                            matchInfo=match;
-                                                            ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
+                                                                        showMatches[index] = !showMatches[index];
+                                                                        showMatch = true;
+                                                                        matchInfo=match;
+                                                                        ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
                                 </div>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match v-bind:matchInfo="matchInfo"/>
+                    <Match v-bind:matchInfo="matchInfo" />
                 </div>
             </div>
         </div>
@@ -34,27 +34,27 @@
 
 <script>
 
-  /*
-    0 Match_Id,
-    1    Match_Date,
-    2   Team_Name_Id,
-    3    Opponent_Team_Id,
-    4   Season_Id,
-    5    Venue_Name,
-    6    Toss_Winner_Id,
-    7    Toss_Decision,
-    8    IS_Superover,
-    9    IS_Result,
-    10    Is_DuckWorthLewis,
-    11    Win_Type,
-    12    Won_By,
-    13    Match_Winner_Id,
-    14    Man_Of_The_Match_Id,
-    15    First_Umpire_Id,
-    16    Second_Umpire_Id,
-    17    City_Name,
-    18    Host_Country
-    */
+/*
+  0 Match_Id,
+  1    Match_Date,
+  2   Team_Name_Id,
+  3    Opponent_Team_Id,
+  4   Season_Id,
+  5    Venue_Name,
+  6    Toss_Winner_Id,
+  7    Toss_Decision,
+  8    IS_Superover,
+  9    IS_Result,
+  10    Is_DuckWorthLewis,
+  11    Win_Type,
+  12    Won_By,
+  13    Match_Winner_Id,
+  14    Man_Of_The_Match_Id,
+  15    First_Umpire_Id,
+  16    Second_Umpire_Id,
+  17    City_Name,
+  18    Host_Country
+  */
 
 
 import Papa from '../../node_modules/papaparse/papaparse.js';
@@ -87,76 +87,74 @@ fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8
     response.text().then(function(data) {
         myMatches = Papa.parse(data).data;
         //console.log(myMatches);
-    });
-}).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-})
 
-//for teams
-fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
-    if (response.status !== 200) {
-        return;
-    }
-    response.text().then(function(data) {
-        myTeams = Papa.parse(data).data;
-        let teamShort = "", teamLong = "";
-        for(let k = 0; k < myTeams.length; k++) {
-            teamShort += myTeams[k][2] + '$';
-            teamLong += myTeams[k][1] + '$';
-        }
-        localStorage.setItem("myTeamsShort", teamShort);
-        localStorage.setItem("myTeams", teamLong);
-    });
-}).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-})
-
-//for seasons
-fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
-    if (response.status !== 200) {
-        return;
-    }
-    response.text().then(function(data) {
-        mySeasons = Papa.parse(data).data;
-        mySeasons.splice(mySeasons.length - 1, 1);
-    });
-}).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-})
-
-var myTimeout = 10;
-if (localStorage.getItem("loaded") == undefined) {
-    myTimeout = 3000;
-    localStorage.setItem("loaded", "");
-}
-
-setTimeout(() => {
-
-    for (let i = 0; i < 10; i++) {
-        let junk = "df";
-        for (let j = 1; j < mySeasons.length; j++)
-            if (parseInt(mySeasons[j][0]) == i)
-                junk = mySeasons[j][1];
-        seasons.push([junk]);
-    }
-
-    for (let i = 1; i < myMatches.length; i++) {
-        let junk = parseInt(myMatches[i][4]);
-        if (junk > 0 && junk <= 9) {
-            let strng = "";
-            for(let j = 0; j < myMatches[i].length; j++) {
-                strng = strng + myMatches[i][j] + "$";
+        //for seasons
+        fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
+            if (response.status !== 200) {
+                return;
             }
-            strng += localStorage.getItem("myTeamsShort");
-            seasons[junk].push(strng);
-        }
-    }
-
-    seasons.splice(0, 1);
-    seasons.slice().reverse();
+            response.text().then(function(data) {
+                mySeasons = Papa.parse(data).data;
+                mySeasons.splice(mySeasons.length - 1, 1);
 
 
-}, myTimeout);
+                //for teams
+                fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
+                    if (response.status !== 200) {
+                        return;
+                    }
+                    response.text().then(function(data) {
+                        myTeams = Papa.parse(data).data;
+                        let teamShort = "", teamLong = "";
+                        for (let k = 0; k < myTeams.length; k++) {
+                            teamShort += myTeams[k][2] + '$';
+                            teamLong += myTeams[k][1] + '$';
+                        }
+                        localStorage.setItem("myTeamsShort", teamShort);
+                        localStorage.setItem("myTeams", teamLong);
+
+                        //generating the array
+                        for (let i = 0; i < 10; i++) {
+                            let junk = "df";
+                            for (let j = 1; j < mySeasons.length; j++)
+                                if (parseInt(mySeasons[j][0]) == i)
+                                    junk = mySeasons[j][1];
+                            seasons.push([junk]);
+                        }
+
+                        for (let i = 1; i < myMatches.length; i++) {
+                            let junk = parseInt(myMatches[i][4]);
+                            if (junk > 0 && junk <= 9) {
+                                let strng = "";
+                                for (let j = 0; j < myMatches[i].length; j++) {
+                                    strng = strng + myMatches[i][j] + "$";
+                                }
+                                strng += localStorage.getItem("myTeamsShort");
+                                seasons[junk].push(strng);
+                            }
+                        }
+
+                        seasons.splice(0, 1);
+                        seasons.slice().reverse();
+
+
+                    });
+                }).catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                })
+
+
+            });
+        }).catch(function(err) {
+            console.log('Fetch Error :-S', err);
+        })
+
+
+
+    });
+}).catch(function(err) {
+    console.log('Fetch Error :-S', err);
+})
 
 
 var loadMatch = (x) => {
