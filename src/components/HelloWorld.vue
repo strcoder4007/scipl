@@ -10,8 +10,12 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" v-on:click="showMatch = false; showMatches[index] = !showMatches[index];showMatch = true;loadMatch(match.split('$')[0]);">
-                                    {{ match.split('$')[2] }}
+                                <div v-if="idx" 
+                                v-on:click="showMatch = false;
+                                                    showMatches[index] = !showMatches[index];
+                                                    showMatch = true;
+                                                    msg=parseInt(match.split('$')[0]);
+                                                    ">{{ match.split('$')[2] }}
                                 </div>
                             </div>
                         </div>
@@ -22,7 +26,7 @@
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match :myIdChange="msg"/>
+                    <Match v-bind:myId="msg"/>
                 </div>
             </div>
         </div>
@@ -50,11 +54,14 @@ for (let i = 0; i < 10; i++) {
     for (var j = 0; j < 4; j++)
         matches[i].push("m");
 }
-var msg="", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
+var matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers;
 var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
 var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
+
+
+var msg = 335987;
 
 //for matches
 fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
@@ -122,7 +129,7 @@ setTimeout(() => {
 
 var loadMatch = x => {
     localStorage.setItem("myId", x);
-    msg = x;
+    //msg = x;
     /*
     0 Match_Id,
     1    Match_Date,
