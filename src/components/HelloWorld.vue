@@ -11,10 +11,11 @@
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
                                 <div v-if="idx" v-on:click="showMatch = false;
-                                                                        showMatches[index] = !showMatches[index];
-                                                                        showMatch = true;
-                                                                        matchInfo=match;
-                                                                        ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
+                                                    showMatches[index] = !showMatches[index];
+                                                    showMatch = true;
+                                                    matchInfo=match;
+                                                    loadMatch(match.split('$')[0]);
+                                                    ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
                                 </div>
                             </div>
                         </div>
@@ -34,27 +35,6 @@
 
 <script>
 
-/*
-  0 Match_Id,
-  1    Match_Date,
-  2   Team_Name_Id,
-  3    Opponent_Team_Id,
-  4   Season_Id,
-  5    Venue_Name,
-  6    Toss_Winner_Id,
-  7    Toss_Decision,
-  8    IS_Superover,
-  9    IS_Result,
-  10    Is_DuckWorthLewis,
-  11    Win_Type,
-  12    Won_By,
-  13    Match_Winner_Id,
-  14    Man_Of_The_Match_Id,
-  15    First_Umpire_Id,
-  16    Second_Umpire_Id,
-  17    City_Name,
-  18    Host_Country
-  */
 
 
 import Papa from '../../node_modules/papaparse/papaparse.js';
@@ -75,107 +55,160 @@ for (let i = 0; i < 10; i++) {
 }
 var matchInfo = "", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
-var myTeams, myMatches, mySeasons, myPlayers;
-var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhHdwzFOTGl_5JJK";
-var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
+var myTeams, myMatches, mySeasons, myPlayers, myBalls;
+//var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhYHwQNS07CCGMB8";
+//var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
 
-//for matches
-fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
+
+//for players;
+fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2oRdXOUJZrThzhFB67JDGf0M80IBJPM_7eCa5A_tAJ4hZqdDPcCoypXc5wVdhyNgI1bArDCVzyyBIQT9TdTdqyiQBDkOPThbWe_tcO0NZiyvrvgYRgmVWBdXD6mmFvF21Fu9qmyPHpDQ2K9NouhW4x9_ENJzLL1bSWuWDBGmQHGWoI7ZNSQ').then(response => {
     if (response.status !== 200) {
         return;
     }
     response.text().then(function(data) {
-        myMatches = Papa.parse(data).data;
-        //console.log(myMatches);
-
-        //for seasons
-        fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
+        myPlayers = Papa.parse(data).data;
+        console.log(myPlayers);
+        //for balls;
+        fetch('https://ilzqng.bn.files.1drv.com/y4mj1Rjjyfc6yNQa8SNGEqX_gI64G9fI7dlxz6Qnz6a45OoHVlOy3EYgzI4SJX9emnFYn85S9IwXL4tH91IktYw9YrRmGt1JGCkkeMHVWS2-FnOqH8wozDeQhw7-ucRd9GeU7uJjACVAGR0UERTD1GHq30UlLoq55-7bMmYrdTvf2LY-EcvNoT0ztGrORgpMT0X5bl5KPQATI1KhcWxWN8bEQ').then(response => {
             if (response.status !== 200) {
                 return;
             }
             response.text().then(function(data) {
-                mySeasons = Papa.parse(data).data;
-                mySeasons.splice(mySeasons.length - 1, 1);
-
-
-                //for teams
-                fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
+                myBalls = Papa.parse(data).data;
+                console.log(myBalls);
+                //for matches
+                fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
                     if (response.status !== 200) {
                         return;
                     }
                     response.text().then(function(data) {
-                        myTeams = Papa.parse(data).data;
-                        let teamShort = "", teamLong = "";
-                        for (let k = 0; k < myTeams.length; k++) {
-                            teamShort += myTeams[k][2] + '$';
-                            teamLong += myTeams[k][1] + '$';
-                        }
-                        localStorage.setItem("myTeamsShort", teamShort);
-                        localStorage.setItem("myTeams", teamLong);
+                        myMatches = Papa.parse(data).data;
+                        //console.log(myMatches);
 
-                        //generating the array
-                        for (let i = 0; i < 10; i++) {
-                            let junk = "df";
-                            for (let j = 1; j < mySeasons.length; j++)
-                                if (parseInt(mySeasons[j][0]) == i)
-                                    junk = mySeasons[j][1];
-                            seasons.push([junk]);
-                        }
-
-                        for (let i = 1; i < myMatches.length; i++) {
-                            let junk = parseInt(myMatches[i][4]);
-                            if (junk > 0 && junk <= 9) {
-                                let strng = "";
-                                for (let j = 0; j < myMatches[i].length; j++) {
-                                    strng = strng + myMatches[i][j] + "$";
-                                }
-                                strng += localStorage.getItem("myTeamsShort");
-                                seasons[junk].push(strng);
+                        //for seasons
+                        fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
+                            if (response.status !== 200) {
+                                return;
                             }
-                        }
+                            response.text().then(function(data) {
+                                mySeasons = Papa.parse(data).data;
+                                mySeasons.splice(mySeasons.length - 1, 1);
 
-                        seasons.splice(0, 1);
-                        seasons.slice().reverse();
+
+                                //for teams
+                                fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
+                                    if (response.status !== 200) {
+                                        return;
+                                    }
+                                    response.text().then(function(data) {
+                                        myTeams = Papa.parse(data).data;
+                                        let teamShort = "", teamLong = "";
+                                        for (let k = 0; k < myTeams.length; k++) {
+                                            teamShort += myTeams[k][2] + '$';
+                                            teamLong += myTeams[k][1] + '$';
+                                        }
+                                        localStorage.setItem("myTeamsShort", teamShort);
+                                        localStorage.setItem("myTeams", teamLong);
+
+                                        //generating the array
+                                        for (let i = 0; i < 10; i++) {
+                                            let junk = "df";
+                                            for (let j = 1; j < mySeasons.length; j++)
+                                                if (parseInt(mySeasons[j][0]) == i)
+                                                    junk = mySeasons[j][1];
+                                            seasons.push([junk]);
+                                        }
+
+                                        for (let i = 1; i < myMatches.length; i++) {
+                                            let junk = parseInt(myMatches[i][4]);
+                                            if (junk > 0 && junk <= 9) {
+                                                let strng = "";
+                                                for (let j = 0; j < myMatches[i].length; j++) {
+                                                    strng = strng + myMatches[i][j] + "$";
+                                                }
+                                                strng += localStorage.getItem("myTeamsShort");
+                                                seasons[junk].push(strng);
+                                            }
+                                        }
+
+                                        seasons.splice(0, 1);
+                                        seasons.slice().reverse();
 
 
+                                    });
+                                }).catch(function(err) {
+                                    console.log('Fetch Error :-S', err);
+                                })
+                            });
+                        }).catch(function(err) {
+                            console.log('Fetch Error :-S', err);
+                        })
                     });
                 }).catch(function(err) {
                     console.log('Fetch Error :-S', err);
                 })
-
-
             });
         }).catch(function(err) {
             console.log('Fetch Error :-S', err);
         })
-
-
-
     });
 }).catch(function(err) {
     console.log('Fetch Error :-S', err);
 })
 
 
-var loadMatch = (x) => {
-    //localStorage.setItem("myId", x);
 
-    for (let i = 0; i < myMatches.length; i++) {
-        if (myMatches[i][0] == x) {
-            matchDate = myMatches[i][1]
-            team = myTeams[parseInt(myMatches[i][2])][1];
-            opponent = myTeams[parseInt(myMatches[i][3])][1];
-            seasonId = myMatches[i][4];
-            venueName = myMatches[i][5];
-            tossId = myMatches[i][6];
-            tossDecision = myMatches[i][7];
-            winType = myMatches[i][11];
-            wonBy = myMatches[i][12];
-            matchWinnerId = myMatches[i][13];
-            manOfTheMatch = myMatches[i][14];
-            city = myMatches[i][17];
-            country = myMatches[i][18];
-            break;
+
+
+var loadMatch = x => {
+
+    /*
+      0 Match_Id,
+      1    Match_Date,
+      2   Team_Name_Id,
+      3    Opponent_Team_Id,
+      4   Season_Id,
+      5    Venue_Name,
+      6    Toss_Winner_Id,
+      7    Toss_Decision,
+      8    IS_Superover,
+      9    IS_Result,
+      10    Is_DuckWorthLewis,
+      11    Win_Type,
+      12    Won_By,
+      13    Match_Winner_Id,
+      14    Man_Of_The_Match_Id,
+      15    First_Umpire_Id,
+      16    Second_Umpire_Id,
+      17    City_Name,
+      18    Host_Country
+      */
+    let lastId = myBalls[0][2], runs1 = [], runs2 = [], cnt1 = 0, cnt2 = 0;
+    let limit = myBalls.length;
+    for (let i = 1; i < limit; i++) {
+        if (myBalls[i][0] == x && myBalls[i][1] == "1") {
+            if (myBalls[i][2] != lastId) {
+                runs1.push(cnt1);
+                lastId = myBalls[i][2];
+            }
+            else {
+                if (myBalls[i][10] != " ")
+                    cnt1 += parseInt(myBalls[i][10]);
+                if (myBalls[i][12] != " ")
+                    cnt1 += parseInt(myBalls[i][12]);
+            }
+        }
+        else if (myBalls[i][0] == x && myBalls[i][1] == "2") {
+            if (myBalls[i][2] != lastId) {
+                runs2.push(cnt2);
+                lastId = myBalls[i][2];
+            }
+            else {
+                if (myBalls[i][10] != " ")
+                    cnt2 += parseInt(myBalls[i][10]);
+                if (myBalls[i][12] != " ")
+                    cnt2 += parseInt(myBalls[i][12]);
+            }
         }
     }
 
@@ -184,14 +217,14 @@ var loadMatch = (x) => {
         new Chart(document.getElementById("line-chart"), {
             type: 'line',
             data: {
-                labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
+                labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
                 datasets: [{
-                    data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
+                    data: runs1,
                     label: "Africa",
                     borderColor: "#3e95cd",
                     fill: false
                 }, {
-                    data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
+                    data: runs2,
                     label: "Asia",
                     borderColor: "#8e5ea2",
                     fill: false
@@ -201,7 +234,7 @@ var loadMatch = (x) => {
             options: {
                 title: {
                     display: true,
-                    text: 'World population per region (in millions)'
+                    text: 'Runs vs Overs'
                 }
             }
         });
@@ -218,7 +251,7 @@ export default {
     },
     data() {
         return {
-            matchInfo, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, myTeams
+            matchInfo, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, myTeams, myBalls, myPlayers
         }
     }
 }
