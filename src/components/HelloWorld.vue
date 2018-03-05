@@ -59,32 +59,35 @@ for (let i = 0; i < 10; i++) {
 var matchInfo = "", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers, myBalls;
-var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhJSWGytvtfVBKFY";
+var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhpA1M6AV9nQTz6g";
 var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
 console.log(dataUrl);
 
 //for players;
+//https://hvbkwq.bn.files.1drv.com/y4mIlCUXmxEvk7qCbIj_qcWj1luMDC1lsrkqj_803_dtil7k1x_CYknJ8LZb9ziiYL0CZwrwAB0ujKsE-bwMd8GmGC_O761bF7Gh7tM0lJNxYQZrCI6zpd8PYcUpjxE6RaDn2K29AM6j8yTnsUom8ZZ2ActcCdetKu9JbKqeD1mQodAW3AHk5N3mkNQhHbIxigjBKgTBFypyyvbERwJzgHFww
 fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2oRdXOUJZrThzhFB67JDGf0M80IBJPM_7eCa5A_tAJ4hZqdDPcCoypXc5wVdhyNgI1bArDCVzyyBIQT9TdTdqyiQBDkOPThbWe_tcO0NZiyvrvgYRgmVWBdXD6mmFvF21Fu9qmyPHpDQ2K9NouhW4x9_ENJzLL1bSWuWDBGmQHGWoI7ZNSQ').then(response => {
     if (response.status !== 200) {
         return;
     }
     response.text().then(function(data) {
         myPlayers = Papa.parse(data).data;
-        console.log(myPlayers);
+        //console.log(myPlayers);
         let strng = "";
         for (let i = 0; i < myPlayers.length; i++) {
             strng += myPlayers[i][1] + '$';
         }
         localStorage.setItem("myPlayers", strng);
         //for balls;
+        //https://hfbkwq.bn.files.1drv.com/y4mZBHgPPYTTXGkaXoyLmtft1ECMBYjMb326Ju9MKO6qr8YnX4gKxsww4iG51lAFaUKCXh8U5mcMmfE-K_Suf4YbNmXkNo4mVdIDW9mC4x-XAHHeUpaJhWEUr47g_lbgpP1zYqds3TN0tZ8JFRlH177eRSw-cq-OuWT3xWu8m8pC2ZetlWqwBDWhHOWpCP9vOvNhRE1OgtN7xxOHuAKH8xheQ
         fetch('https://ilzqng.bn.files.1drv.com/y4mj1Rjjyfc6yNQa8SNGEqX_gI64G9fI7dlxz6Qnz6a45OoHVlOy3EYgzI4SJX9emnFYn85S9IwXL4tH91IktYw9YrRmGt1JGCkkeMHVWS2-FnOqH8wozDeQhw7-ucRd9GeU7uJjACVAGR0UERTD1GHq30UlLoq55-7bMmYrdTvf2LY-EcvNoT0ztGrORgpMT0X5bl5KPQATI1KhcWxWN8bEQ').then(response => {
             if (response.status !== 200) {
                 return;
             }
             response.text().then(function(data) {
                 myBalls = Papa.parse(data).data;
-                console.log(myBalls);
+                //console.log(myBalls);
                 //for matches
+                //https://f1bkwq.bn.files.1drv.com/y4mT514v2EwifcLsyHYj7fkt0RQg8a49cnsBiYzveU4PPOI2HwmndDDnm9x3OB_qixFFl4YmLgoG6G_OEfWLCXIt0a3mXQlXvxI2j_bYyPuMXUUCNglwJA2ZNOOYCT1jkjK2a-plHTGIfRnv7bD1NmcMxqQwuufm_7-CsIG-gYQDPrh4mrWNru4No18vVPBL8TjL-__Qz_Pi-drSTr8GSrw3A
                 fetch('https://hfzqng.bn.files.1drv.com/y4mzpRpey6-zwV8EO242SDib41UBh25V1GKon_I8leXO_XnpIa5gM7Na3GyZFUDqhcm6qjxTwbCBn6Adkcqrikey6EB4pubVHnBkGLFVR5sabIsixStAMvhoWUt786MfcUytE51nCzjiHPE0aqsaiDncvKZeg3LiEn4mJTta338t71Tj-NDB-cREy4YEgguCrpB2tKRu3XTAmdr3qYr5LMjHQ').then(response => {
                     if (response.status !== 200) {
                         return;
@@ -94,6 +97,7 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
                         //console.log(myMatches);
 
                         //for seasons
+                        //https://hlbkwq.bn.files.1drv.com/y4mIy-hEiD38S_ZfM39UnxgWRqGyq_jjbR_WDs0kGNVImpdh7zuQFHFDn2Cdf4ZBmplhFVZmslykd2gtujlHn3zCM0Ioq8TUQ_KwN1CvAOfTQB5a0BPaIEKZamdSmpv7blpvC0CxuKXaj01Vp7E_qvaWLtFEEfSGwSA0A9WpDTP_IbeHH6IoqGjSB2efimYn1AhUkdXq9e4h4RsvjjHLqFMyw
                         fetch('https://f1zqng.bn.files.1drv.com/y4mjnTFba2iSF--66P1CdTG2NqjIJp1vGMjfDgeo_lY42psmuu1S9FfkWEPkxxiqW_ZPj9lB2DKejintViZ3aV5BJUrVqLmCyltMw3F0lkUHpdH7Vd4QUSG0qySYDxVjGEK4IOMI07b-5D4hJB3SjArd7aMflNjpHYCwxQE1fIoRUZpGXaEfdKFjADVcjVTW0MJAlSyKAndsjATG3ppZlUc_Q').then(response => {
                             if (response.status !== 200) {
                                 return;
@@ -104,6 +108,7 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
 
 
                                 //for teams
+                                //https://gfbkwq.bn.files.1drv.com/y4m0CP7cRQmIOyfWg7vNHksL-Gjs716W5AHvrZhs1-TN8uNsvF1uZZKhtm_2NUQXfw9Reyxpef2b09PDXWZpFGqy1RAFaKQUhMXJR4Ebfem7ZttvyaeoES6LJMqthpans1UM56l8O35eTfljxn1ak6MknILWuiy7iCbXP-_IKDoAIvdUtmLPYksweudV2kwd7EJ38UhtHMO__XHcYafaP65AA
                                 fetch('https://gfzqng.bn.files.1drv.com/y4mMMlLtdRNBqLBV_RO7IB6JCMOuRQJxmY8YlHqXDLxrabLS2YbdxX85SZStkvwnXCf03BTH_MQLK9-TW66VIddUiJLWHVZ2NZBc7f_fAyZ7HKYCN0AswdDOI-PB03fg41aft_Bn4h1zAeyUuFxEiUDOObQoJ9DEdmXEfxBRHNChwct_BYBqKlFEURlalzbFaAn02LC3TvxX8XEV6M9oIcFWQ').then(response => {
                                     if (response.status !== 200) {
                                         return;

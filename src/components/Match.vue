@@ -44,7 +44,6 @@ export default {
     created() {
         this.teamString = localStorage.getItem("myTeams").split('$');
         this.playerString = localStorage.getItem("myPlayers").split('$');
-        console.log(this.playerString);
         this.matchId = parseInt(this.matchInfo.split('$')[0]);
         this.matchDate = this.matchInfo.split('$')[1];
         this.team = this.teamString[parseInt(this.matchInfo.split('$')[2])];
