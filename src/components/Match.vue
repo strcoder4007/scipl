@@ -5,44 +5,13 @@
         <span class="info">On {{matchDate}} at {{venueName}} in {{city}}, {{country}}</span><br>
         <span class="info">Toss Winner: {{tossId}} decided to {{tossDecision}}</span><br>
         <span class="heading">{{matchWinnerId}} won by {{wonBy}} {{winType.split(' ')[1]}} with {{manOfTheMatch}} being the man of the match</span>
-        <div class="row gutter-0">
-            <div class="col-md-6 col-sm-12">
-
-            </div>
-            <div class="col-md-6 col-sm-12"></div>
-        </div>
-
         <div class="clearfix"></div>
         <canvas id="line-chart" width="800" height="450"></canvas>
     </div>
 </template>
 
 <script>
-/*
-  0 Match_Id,
-  1    Match_Date,
-  2   Team_Name_Id,
-  3    Opponent_Team_Id,
-  4   Season_Id,
-  5    Venue_Name,
-  6    Toss_Winner_Id,
-  7    Toss_Decision,
-  8    IS_Superover,
-  9    IS_Result,
-  10    Is_DuckWorthLewis,
-  11    Win_Type,
-  12    Won_By,
-  13    Match_Winner_Id,
-  14    Man_Of_The_Match_Id,
-  15    First_Umpire_Id,
-  16    Second_Umpire_Id,
-  17    City_Name,
-  18    Host_Country
-  */
-
-
 import Papa from '../../node_modules/papaparse/papaparse.js';
-
 
 var myMatches, teamString, playerString;
 var matchId, matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;

@@ -10,23 +10,26 @@
                         <div>Year {{ season[0] }}</div>
                         <div v-if="showMatches[index]">
                             <div v-for="(match, idx) in season" v-bind:key='idx' class="matchClass">
-                                <div v-if="idx" v-on:click="showMatch = false;
-                                                    showMatches[index] = !showMatches[index];
-                                                    showMatch = true;
-                                                    matchInfo=match;
-                                                    loadMatch(match);
-                                                    ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
-                                </div>
+                                <a href="#match" class="matchClass">
+                                    <div v-if="idx" v-on:click="showMatch = false;
+                                                                    showMatches[index] = !showMatches[index];
+                                                                    showMatch = true;
+                                                                    matchInfo=match;
+                                                                    loadMatch(match);
+                                                                    ">{{ match.split('$')[19+parseInt(match.split('$')[2])] }} vs {{ match.split('$')[19+parseInt(match.split('$')[3])] }}
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="seasonClass">Versus</div>
-                <div class="seasonClass">Settings</div>
+                <div class="seasonClass" v-on:click="showVersus = !showVersus">Versus</div>
+                <div class="seasonsClass" v-if="showVersus">player VS player</div>
+                <div class="seasonsClass" v-if="showVersus">match VS match</div>
             </div>
             <div class="Right col-sm-12 col-md-10">
                 <div v-if="showMatch">
-                    <Match v-bind:matchInfo="matchInfo" />
+                    <Match v-bind:matchInfo="matchInfo" id="match" />
                 </div>
             </div>
         </div>
@@ -56,9 +59,9 @@ for (let i = 0; i < 10; i++) {
 var matchInfo = "", matchDate, team, opponent, seasonId, venueName, tossId, tossDecision, winType, wonBy, matchWinnerId, manOfTheMatch, city, country;
 
 var myTeams, myMatches, mySeasons, myPlayers, myBalls;
-//var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhYHwQNS07CCGMB8";
-//var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
-
+var onedriveUrl = "https://1drv.ms/u/s!AmQasIRCiDf9vhJSWGytvtfVBKFY";
+var dataUrl = "https://api.onedrive.com/v1.0/shares/u!" + btoa(onedriveUrl + "?v=" + Math.random()) + "/root?expand=children";
+console.log(dataUrl);
 
 //for players;
 fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2oRdXOUJZrThzhFB67JDGf0M80IBJPM_7eCa5A_tAJ4hZqdDPcCoypXc5wVdhyNgI1bArDCVzyyBIQT9TdTdqyiQBDkOPThbWe_tcO0NZiyvrvgYRgmVWBdXD6mmFvF21Fu9qmyPHpDQ2K9NouhW4x9_ENJzLL1bSWuWDBGmQHGWoI7ZNSQ').then(response => {
@@ -69,8 +72,8 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
         myPlayers = Papa.parse(data).data;
         console.log(myPlayers);
         let strng = "";
-        for(let i = 0; i < myPlayers.length; i++) {
-            strng += myPlayers[i][1]+'$';
+        for (let i = 0; i < myPlayers.length; i++) {
+            strng += myPlayers[i][1] + '$';
         }
         localStorage.setItem("myPlayers", strng);
         //for balls;
@@ -135,10 +138,8 @@ fetch('https://hvzqng.bn.files.1drv.com/y4mY80lvbsYtjGZzW4Cx8wCosjJ5IOM6O4rHwN2o
                                                 seasons[junk].push(strng);
                                             }
                                         }
-
                                         seasons.splice(0, 1);
                                         seasons.slice().reverse();
-
 
                                     });
                                 }).catch(function(err) {
@@ -196,6 +197,7 @@ var loadMatch = info => {
         }
     }
     let teamString = localStorage.getItem("myTeams");
+    let playerString = localStorage.getItem("myPlayers");
     let team1 = teamString.split('$')[parseInt(info.split('$')[2])];
     let team2 = teamString.split('$')[parseInt(info.split('$')[3])];
     setTimeout(function() {
@@ -207,12 +209,12 @@ var loadMatch = info => {
                     data: runs1,
                     label: team1,
                     borderColor: "#3e95cd",
-                    fill: false
+                    fill: true
                 }, {
                     data: runs2,
                     label: team2,
                     borderColor: "#8e5ea2",
-                    fill: false
+                    fill: true
                 }
                 ]
             },
@@ -223,6 +225,7 @@ var loadMatch = info => {
                 }
             }
         });
+
     }, 400);
 
 
@@ -234,9 +237,11 @@ export default {
     components: {
         Match
     },
+    created() {
+    },
     data() {
         return {
-            matchInfo, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, myTeams, myBalls, myPlayers
+            matchInfo, showMatch: false, seasons, showSeasons, showMatches, matches, loadMatch, myTeams, myBalls, myPlayers, showVersus: false, showSettings: false
         }
     }
 }
@@ -297,6 +302,7 @@ export default {
     font-size: 25px;
     border-bottom: 1px solid #222;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .seasonsClass:hover,
